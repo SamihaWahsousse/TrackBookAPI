@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RegisterController!
+{% endblock %}
+
+
+{% block body %}
+	<form method="post">
+		<div class="container">
+			<div class="login-container">
+				<input id="item-1" type="radio" name="item" class="sign-in" checked>
+				<label for="item-1" class="item">Sign In</label>
+
+				<input id="item-2" type="radio" name="item" class="sign-up">
+				<label for="item-2" class="item">Register</label>
+
+
+				<div class="login-form">
+					<div class="sign-in-htm">
+						<div class="group">
+							<input placeholder="Email" type="email" class="input" name="email" autocomplete="email" autofocus>
+						</div>
+
+						<div class="group">
+							<input placeholder="Password" name="password" id="pass" type="password" class="input" data-type="password" autocomplete="current-password" required>
+						</div>
+
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+						<div class="group">
+							<input type="submit" class="button" value="Sign In">
+						</div>
+						<div class="hr"></div>
+						<div class="footer">
+							<a href="#forgot">Forgot Password?</a>
+						</div>
+					</div>
+					<div class="sign-up-htm">
+						<div class="group">
+							<input placeholder="Username" id="user1" type="text" class="input">
+						</div>
+						<div class="group">
+							<input placeholder="avatar" id="avatar" type="text" class="input">
+						</div>
+						<div class="group">
+							<input placeholder="Email adress" id="pass" type="text" class="input">
+						</div>
+
+						<div class="group">
+							<input placeholder="Password" id="pass1" type="password" class="input">
+						</div>
+
+						<div class="group">
+							<input type="submit" class="button" value="Sign Up">
+						</div>
+						<div class="hr"></div>
+						<div class="footer">
+							<label for="item-1">Already have an account?</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	{% endblock %}
