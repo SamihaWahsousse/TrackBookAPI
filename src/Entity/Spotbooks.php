@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\SpotbooksRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SpotbooksRepository::class)]
 class Spotbooks
@@ -12,21 +14,36 @@ class Spotbooks
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['spotBooks:read'])]
+    #[Assert\NotBlank]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Groups(['spotBooks:read'])]
+    #[Assert\NotBlank]
     private ?string $street = null;
 
     #[ORM\Column]
+    #[Groups(['spotBooks:read'])]
+    #[Assert\NotBlank]
     private ?int $zipcode = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['spotBooks:read'])]
+    #[Assert\NotBlank]
     private ?string $city = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    #[Groups(['spotBooks:read'])]
+    #[Assert\NotBlank]
+
     private array $goelocalisation = [];
 
     #[ORM\Column]
+    #[Groups(['spotBooks:read'])]
+    #[Assert\NotBlank]
+
     private ?int $capacity = null;
 
     public function getId(): ?int

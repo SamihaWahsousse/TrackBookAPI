@@ -21,7 +21,7 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            // uuidFiel::new('id')->hideOnForm(),
+            TextField::new('uuid'),
             TextField::new('name'),
             TextField::new('email'),
             ImageField::new('avatar')

@@ -2,26 +2,61 @@
 
 namespace App\Controller;
 
+use App\Entity\Spotbooks;
+use App\Repository\SpotbooksRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\JsonDecoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\JsonRequest;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SpotbooksController extends AbstractController
 {
-    #[Route('/spotbooks', name: 'app_spotbooks_index')]
-    public function index(): JsonResponse
+    #[Route('/spotbooks', name: 'spotbooks_get', methods: ["GET"])]
+    public function getSpotBooks(SpotbooksRepository $spotbooksRepository, SerializerInterface $serializer): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SpotbooksController.php',
-        ]);
+        $spotBooks = $this->getDoctrine()
+            ->getRepository(Spotbooks::class)
+            ->findAll();
+
+        $json = $serializer->serialize($spotBooks, 'json', ['groups' => 'spotBooks:read']);
+        $response = new Response($json, 200, [" Content-Type " => "application/json"]);
+        return $response;
     }
 
-    #[Route('/api/v1/spotbooks', name: 'app_spotbooks', methods: ["GET"])]
-    public function showSpotbooks(): JsonResponse
+
+    #[Route('/spotbooks', name: 'spotbooks_post', methods: ["POST"])]
+
+    public function addSpotBooks(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
     {
-        return $this->json([
-            'message' => 'Welcome First API!',
-        ]);
+        try {
+            $jsonRecieved = $request->getContent();
+            $spotBooks = $serializer->deserialize($jsonRecieved, Spotbooks::class, 'json');
+
+            //Manage JSON Content Format error befor the persist ans flush in the DB
+            $errors = $validator->validate($spotBooks);
+            if (count($errors) > 0) {
+                return $this->json($errors, 400);
+            }
+
+            //add to DataBase
+            $em->persist($spotBooks);
+            $em->flush();
+            return $this->json($spotBooks, 201, [], ['groups' => 'spotBooks:read']);
+        }
+        //manage the syntax of a jsonRequest (if missing { or ,)an exception message is generated
+        catch (NotEncodableValueException $e) {
+            return $this->json([
+                'staut' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }
