@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,6 +41,14 @@ class Book
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Spotbooks $spotBooks = null;
+
+    #[ORM\OneToMany(mappedBy: 'borrow', targetEntity: BorrowBook::class)]
+    private Collection $borrowBooks;
+
+    public function __construct()
+    {
+        $this->borrowBooks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,6 +147,36 @@ class Book
     public function setSpotBooks(?Spotbooks $spotBooks): self
     {
         $this->spotBooks = $spotBooks;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BorrowBook>
+     */
+    public function getBorrowBooks(): Collection
+    {
+        return $this->borrowBooks;
+    }
+
+    public function addBorrowBook(BorrowBook $borrowBook): self
+    {
+        if (!$this->borrowBooks->contains($borrowBook)) {
+            $this->borrowBooks->add($borrowBook);
+            $borrowBook->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBorrowBook(BorrowBook $borrowBook): self
+    {
+        if ($this->borrowBooks->removeElement($borrowBook)) {
+            // set the owning side to null (unless already changed)
+            if ($borrowBook->getBook() === $this) {
+                $borrowBook->setBook(null);
+            }
+        }
 
         return $this;
     }

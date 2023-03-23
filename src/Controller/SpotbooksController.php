@@ -27,6 +27,18 @@ class SpotbooksController extends AbstractController
         return $response;
     }
 
+    #[Route('/spotbooks/{id}', name: 'spotbooks_getOneId', methods: ["GET"])]
+    public function getSpotBooksById($id, SerializerInterface $serializer): Response
+    {
+        $spotBooks = $this->getDoctrine()
+            ->getRepository(Spotbooks::class)
+            ->findOneBy(['id' => $id]);
+
+        $json = $serializer->serialize($spotBooks, 'json', ['groups' => 'spotBooks:read']);
+        $response = new Response($json, 200, [" Content-Type " => "application/json"]);
+        return $response;
+    }
+
 
     #[Route('/spotbooks', name: 'spotbooks_post', methods: ["POST"])]
 
