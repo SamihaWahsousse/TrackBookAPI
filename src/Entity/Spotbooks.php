@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SpotbooksRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -45,6 +47,14 @@ class Spotbooks
     #[Assert\NotBlank]
 
     private ?int $capacity = null;
+
+    #[ORM\OneToMany(mappedBy: 'spotBooks', targetEntity: Book::class)]
+    private Collection $books;
+
+    public function __construct()
+    {
+        $this->books = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -109,5 +119,40 @@ class Spotbooks
         $this->capacity = $capacity;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Book>
+     */
+    public function getBooks(): Collection
+    {
+        return $this->books;
+    }
+
+    public function addBook(Book $book): self
+    {
+        if (!$this->books->contains($book)) {
+            $this->books->add($book);
+            $book->setSpotBooks($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBook(Book $book): self
+    {
+        if ($this->books->removeElement($book)) {
+            // set the owning side to null (unless already changed)
+            if ($book->getSpotBooks() === $this) {
+                $book->setSpotBooks(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->street; // Remplacer champ par une propriété "string" de l'entité
     }
 }

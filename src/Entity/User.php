@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -109,6 +111,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
     //add password Hascher from management panel with easyAdmin
     private ?string $plainPassword = '';
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: BorrowBook::class)]
+    private Collection $borrowBooks;
+
+    public function __construct()
+    {
+        $this->borrowBooks = new ArrayCollection();
+    }
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
@@ -176,6 +186,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BorrowBook>
+     */
+    public function getBorrowBooks(): Collection
+    {
+        return $this->borrowBooks;
+    }
+
+    public function addBorrowBook(BorrowBook $borrowBook): self
+    {
+        if (!$this->borrowBooks->contains($borrowBook)) {
+            $this->borrowBooks->add($borrowBook);
+            $borrowBook->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBorrowBook(BorrowBook $borrowBook): self
+    {
+        if ($this->borrowBooks->removeElement($borrowBook)) {
+            // set the owning side to null (unless already changed)
+            if ($borrowBook->getUser() === $this) {
+                $borrowBook->setUser(null);
+            }
+        }
 
         return $this;
     }

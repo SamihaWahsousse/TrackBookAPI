@@ -36,6 +36,8 @@ class BookCrudController extends AbstractCrudController
                 ->setRequired(false),
             TextareaField::new('summary'),
             AssociationField::new('category'),
+            AssociationField::new('spotBooks'),
+
         ];
     }
 }

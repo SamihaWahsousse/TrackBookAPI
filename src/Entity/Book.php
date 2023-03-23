@@ -36,6 +36,10 @@ class Book
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Spotbooks $spotBooks = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +125,18 @@ class Book
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getSpotBooks(): ?Spotbooks
+    {
+        return $this->spotBooks;
+    }
+
+    public function setSpotBooks(?Spotbooks $spotBooks): self
+    {
+        $this->spotBooks = $spotBooks;
 
         return $this;
     }
