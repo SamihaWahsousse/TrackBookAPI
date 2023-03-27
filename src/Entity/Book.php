@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -14,24 +15,31 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['book:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['book:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['book:read'])]
     private ?string $author = null;
 
     #[ORM\Column]
+    #[Groups(['book:read'])]
     private ?int $isbn = null;
 
     #[ORM\Column]
+    #[Groups(['book:read'])]
     private ?bool $isAvailable = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['book:read'])]
     private ?string $cover = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['book:read'])]
     private ?string $summary = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
@@ -168,6 +176,7 @@ class Book
 
         return $this;
     }
+
 
     public function removeBorrowBook(BorrowBook $borrowBook): self
     {

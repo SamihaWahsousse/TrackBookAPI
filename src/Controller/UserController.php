@@ -42,20 +42,24 @@ class UserController extends AbstractController
         // $users = $this->getDoctrine()
         //     ->getRepository(User::class)
         //     ->findOneBy(["id" => $id]);
-
         // $json = $serializer->serialize($users, 'json', ['groups' => 'user:read']);
         // $response = new Response($json, 200, ["Content-Type" => "application/json"]);
         // return $response;
 
-        $userId = json_decode($request->getContent(), true);
-        $uuid = $userId['uuid'];
 
+
+        //first method without the symfonyRequest-bundle
+        // $userId = json_decode($request->getContent(), true);
+        // $uuid = $userId['uuid'];
+
+        //Second method with the symfonyRequest-bundle
+        $uuid = $request->get("uuid");
         try {
             $users = $this->getDoctrine()
                 ->getRepository(User::class)
                 ->findOneBy(["uuid" => $uuid]);
             if (!$users) {
-                return $this->json(["error" => " Utilisateur inexistant"], 200);
+                return $this->json(["error" => " User not found"], 200);
             }
 
             $json = $serializer->serialize($users, 'json', ['groups' => 'user:read']);
