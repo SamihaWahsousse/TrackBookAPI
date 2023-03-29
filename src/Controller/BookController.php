@@ -8,6 +8,7 @@ use App\Repository\BookRepository;
 use App\Repository\BorrowBookRepository;
 use App\Repository\UserRepository;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,10 +85,10 @@ class BookController extends AbstractController
 
 
         if (!$book->isIsAvailable()) {
-            $borrow = $borrowBookRepository->findOneBy(["id" => $book, "id" => $user]);
-            $timeBorrow = date("Y-m-d H:i:s");
-            $testTime = $borrow->setReturnDate(new DateTime($timeBorrow));
-            // dd($testTime);
+            $borrow = $borrowBookRepository->findOneBy(["book" => $book, "user" => $user, 'returnDate' => null]);
+
+            $time = new DateTimeImmutable();
+            $borrow->setReturnDate($time);
             $book->setIsAvailable(true);
             $em->persist($book);
             $em->flush();
@@ -98,6 +99,7 @@ class BookController extends AbstractController
         }
     }
 }
+
 /*le premier passage (emprunter le livre)
 -> emprunter un book(action à créer dans la table borrowBook)
 *identifier l'utilisateur qui souhaite faire l'action emprunter

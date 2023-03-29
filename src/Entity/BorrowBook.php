@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\BorrowBookRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 
 #[ORM\Entity(repositoryClass: BorrowBookRepository::class)]
 class BorrowBook
