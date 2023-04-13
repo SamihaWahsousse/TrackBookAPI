@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\BorrowBook;
+use App\Entity\Category;
 use App\Repository\BookRepository;
 use App\Repository\BorrowBookRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use DateTimeImmutable;
@@ -14,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class BookController extends AbstractController
@@ -97,6 +100,24 @@ class BookController extends AbstractController
         } else {
             return $this->json(["Message" => "Book is available", Response::HTTP_BAD_REQUEST]);
         }
+    }
+
+    #[Route('/api/v1/category', name: 'categories', methods: ["GET"])]
+    public function getCategories(CategoryRepository $categoryRepository, SerializerInterface $serializer): Response
+    {
+        $rep = $categoryRepository->findAll();
+        $json = $serializer->serialize($rep, 'json', ['groups' => 'category:read']);
+        $response = new Response($json, 200, ["Content-Type" => "application/json"]);
+        return $response;
+    }
+
+    #[Route('/api/v1/category/{id}', name: 'books_of_category', methods: ["GET"])]
+    public function getBooksCategory(Category $category, BookRepository $bookRepository, SerializerInterface $serializer): Response
+    {
+        $books = $bookRepository->findBy(["category" => $category]);
+        $json = $serializer->serialize($books, 'json', ['groups' => 'book:read']);
+        $response = new Response($json, 200, ["Content-Type" => "application/json"]);
+        return $response;
     }
 }
 
