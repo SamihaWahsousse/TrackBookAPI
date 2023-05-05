@@ -15,11 +15,11 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['book:read'])]
+    #[Groups(['book:read', 'history:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:read'])]
+    #[Groups(['book:read', 'history:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
@@ -35,7 +35,7 @@ class Book
     private ?bool $isAvailable = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:read'])]
+    #[Groups(['book:read', 'history:read'])]
     private ?string $cover = null;
 
     #[ORM\Column(type: Types::TEXT)]

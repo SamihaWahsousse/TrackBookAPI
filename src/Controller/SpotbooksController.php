@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SpotbooksController extends AbstractController
 {
-    #[Route('/spotbooks', name: 'spotbooks_get', methods: ["GET"])]
+    #[Route('/api/v1/spotbooks', name: 'spotbooks_get', methods: ["GET"])]
     public function getSpotBooks(SpotbooksRepository $spotbooksRepository, SerializerInterface $serializer): Response
     {
         $spotBooks = $this->getDoctrine()
@@ -27,7 +27,7 @@ class SpotbooksController extends AbstractController
         return $response;
     }
 
-    #[Route('/spotbooks/{id}', name: 'spotbooks_getOneId', methods: ["GET"])]
+    #[Route('/api/v1/spotbooks/{id}', name: 'spotbooks_getOneId', methods: ["GET"])]
     public function getSpotBooksById($id, SerializerInterface $serializer): Response
     {
         $spotBooks = $this->getDoctrine()

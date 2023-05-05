@@ -59,7 +59,7 @@ class UserController extends AbstractController
                 ->getRepository(User::class)
                 ->findOneBy(["uuid" => $uuid]);
             if (!$users) {
-                return $this->json(["error" => " User not found"], 200);
+                return $this->json(["error" => " User not found"], 201);
             }
 
             $json = $serializer->serialize($users, 'json', ['groups' => 'user:read']);
