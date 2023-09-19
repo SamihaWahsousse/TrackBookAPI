@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +24,10 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/v1/users', name: 'get_users', methods: ["GET"])]
-    public function getUsers(UserRepository $userRepository, SerializerInterface $serializer): Response
+    public function getUsers(SerializerInterface $serializer, ManagerRegistry $doctrine): Response
     {
-        $users = $this->getDoctrine()
-            ->getRepository(User::class)
-            ->findAll();
+        $repository = $doctrine->getRepository(User::class);
+        $users = $repository->findAll();
 
         $json = $serializer->serialize($users, 'json', ['groups' => 'user:read']);
         $response = new Response($json, 200, ["Content-Type" => "application/json"]);
@@ -37,27 +36,15 @@ class UserController extends AbstractController
 
 
     #[Route('/api/v1/users/login', name: 'getUserBy_uuid', methods: ["POST"])]
-    public function getUsersByUuid(UserRepository $userRepository, SerializerInterface $serializer, Request $request): Response
+    public function getUsersByUuid(SerializerInterface $serializer, Request $request, ManagerRegistry $doctrine): Response
     {
-        // $users = $this->getDoctrine()
-        //     ->getRepository(User::class)
-        //     ->findOneBy(["id" => $id]);
-        // $json = $serializer->serialize($users, 'json', ['groups' => 'user:read']);
-        // $response = new Response($json, 200, ["Content-Type" => "application/json"]);
-        // return $response;
-
-
-
-        //first method without the symfonyRequest-bundle
-        // $userId = json_decode($request->getContent(), true);
-        // $uuid = $userId['uuid'];
 
         //Second method with the symfonyRequest-bundle
         $uuid = $request->get("uuid");
         try {
-            $users = $this->getDoctrine()
-                ->getRepository(User::class)
-                ->findOneBy(["uuid" => $uuid]);
+
+            $repository = $doctrine->getRepository(User::class);
+            $users      = $repository->findOneBy(["uuid" => $uuid]);
             if (!$users) {
                 return $this->json(["error" => " User not found"], 201);
             }
