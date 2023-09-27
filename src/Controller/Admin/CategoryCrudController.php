@@ -14,7 +14,7 @@ class CategoryCrudController extends AbstractCrudController
         return Category::class;
     }
 
-
+    //configure Fields for the book category
     public function configureFields(string $pageName): iterable
     {
         return [

@@ -21,7 +21,7 @@ class BookCrudController extends AbstractCrudController
         return Book::class;
     }
 
-
+    //configure Fields for the book
     public function configureFields(string $pageName): iterable
     {
         return [

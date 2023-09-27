@@ -16,10 +16,10 @@ class RegisterController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function index(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): Response
     {
-        //instanciation de la classe User
+        //instanciate the User class
         $user = new User();
 
-        //instanciation du formulaire avec la méthode creatForm
+        //instanciate the register form with creatForm method
         $form = $this->createForm(RegisterType::class, $user);
         $form->handleRequest($request);
         $entityManager = $doctrine->getManager();
@@ -41,13 +41,11 @@ class RegisterController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // // ... perform some action, such as saving the task to the database
+            //redirect to 
             return $this->redirectToRoute('app_user');
         }
 
-
         return $this->render('register/index.html.twig', [
-            // 'controller_name' => 'RegisterController',
             'form' => $form->createview()
 
         ]);

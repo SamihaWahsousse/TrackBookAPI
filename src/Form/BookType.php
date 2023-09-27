@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BookType extends AbstractType
 {
+    //Book FormType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -17,8 +18,7 @@ class BookType extends AbstractType
             ->add('isbn')
             ->add('isAvailable')
             ->add('cover')
-            ->add('summary')
-        ;
+            ->add('summary');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
