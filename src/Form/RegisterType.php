@@ -10,11 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegisterType extends AbstractType
 {
+    //add register formType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('uuid')
-            // ->add('roles')
             ->add('password')
             ->add('name')
             ->add('avatar')
